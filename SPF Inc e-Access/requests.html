@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Requests</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+  }
+  .header {
+    background: green;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .content {
+    padding: 20px;
+  }
+  button {
+    background: green;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #e3eee6;
+  }
+  .logout {
+    background: #555;
+  }
+</style>
+</head>
+<body>
+  <div class="header">Employee Requests</div>
+  <div class="content">
+    <button onclick="openService('payslip')">View Payslip</button>
+    <button onclick="openService('certificate')">Certificate of Employment</button>
+    <button onclick="openService('leave')">Leave Application</button>
+    <button onclick="openService('schedule')">Employee Schedule</button>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+<script>
+function openService(type) {
+  // go to the services page with query parameter
+  window.location.href = `services.html?service=${type}`;
+}
+
+function logout() {
+  localStorage.removeItem("employeeName");
+  window.location.href = "index.html";
+}
+</script>
+</body>
+</html>

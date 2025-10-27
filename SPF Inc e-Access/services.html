@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Services</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f4f4; margin: 0;
+  }
+  .header {
+    background: green; color: white;
+    padding: 15px; font-size: 20px; text-align: center;
+    font-weight: bold;
+  }
+  .content {
+    padding: 20px; background: white;
+    margin: 20px; border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  h2 { color: green; margin-bottom: 10px; }
+  p { font-size: 16px; color: #333; }
+  button {
+    background: rgb(146, 201, 146); color: white;
+    border: none; border-radius: 8px;
+    padding: 12px 20px; width: 90%;
+    margin: 15px auto; display: block;
+    cursor: pointer;
+  }
+  .back-btn { background: #555; }
+</style>
+<!-- Load jsPDF from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="header">Employee Services</div>
+  <div class="content" id="serviceContent">
+    <h2>Loading...</h2>
+    <p>Please wait.</p>
+  </div>
+  <button class="back-btn" onclick="goBack()">Back to Requests</button>
+
+<script>
+const { jsPDF } = window.jspdf;
+const name = localStorage.getItem("employeeName");
+if (!name) window.location.href = "index.html";
+
+const params = new URLSearchParams(window.location.search);
+const service = params.get("service");
+const contentDiv = document.getElementById("serviceContent");
+
+if (service === "payslip") {
+  contentDiv.innerHTML = `
+    <h2>Payslip</h2>
+    <p>Hello ${name}, your payslip for <strong>October 2025</strong> is below.</p>
+    <ul>
+      <li>Basic Salary: ₱25,000</li>
+      <li>Overtime: ₱2,000</li>
+      <li>Deductions: ₱1,500</li>
+      <li><strong>Net Pay: ₱25,500</strong></li>
+    </ul>
+    <button onclick="generatePayslip()">Download Payslip (PDF)</button>
+  `;
+}
+
+else if (service === "certificate") {
+  contentDiv.innerHTML = `
+    <h2>Certificate of Employment</h2>
+    <p>Click below to generate your Certificate of Employment.</p>
+    <button onclick="generateCertificate()">Generate Certificate (PDF)</button>
+  `;
+}
+
+else if (service === "leave") {
+  contentDiv.innerHTML = `
+    <h2>Leave Application</h2>
+    <p>Submit your leave request below:</p>
+    <label>Type of Leave:</label><br>
+    <select id="leaveType" style="width:90%;padding:10px;border-radius:5px;">
+      <option>Vacation Leave</option>
+      <option>Sick Leave</option>
+      <option>Emergency Leave</option>
+    </select><br><br>
+    <label>Start Date:</label><br>
+    <input type="date" id="startDate" style="width:90%;padding:10px;border-radius:5px;"><br><br>
+    <label>End Date:</label><br>
+    <input type="date" id="endDate" style="width:90%;padding:10px;border-radius:5px;"><br><br>
+    <button onclick="submitLeave()">Submit Leave</button>
+  `;
+}
+
+else if (service === "schedule") {
+  contentDiv.innerHTML = `
+    <h2>Employee Schedule</h2>
+    <p>Here’s your current weekly schedule:</p>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><th style="border:1px solid #ccc;padding:8px;">Day</th><th style="border:1px solid #ccc;padding:8px;">Shift</th></tr>
+      <tr><td style="border:1px solid #ccc;padding:8px;">Monday</td><td>8:00 AM – 5:00 PM</td></tr>
+      <tr><td style="border:1px solid #ccc;padding:8px;">Tuesday</td><td>8:00 AM – 5:00 PM</td></tr>
+      <tr><td style="border:1px solid #ccc;padding:8px;">Wednesday</td><td>8:00 AM – 5:00 PM</td></tr>
+      <tr><td style="border:1px solid #ccc;padding:8px;">Thursday</td><td>8:00 AM – 5:00 PM</td></tr>
+      <tr><td style="border:1px solid #ccc;padding:8px;">Friday</td><td>8:00 AM – 5:00 PM</td></tr>
+    </table>
+  `;
+}
+
+else {
+  contentDiv.innerHTML = `<h2>Invalid Service</h2><p>Please go back and choose again.</p>`;
+}
+
+function goBack() {
+  window.location.href = "requests.html";
+}
+
+// === PDF GENERATION FUNCTIONS ===
+function generatePayslip() {
+  const doc = new jsPDF();
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("SPF Inc Payslip", 20, 20);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Employee: ${name}`, 20, 35);
+  doc.text("Month: October 2025", 20, 45);
+  doc.text("Basic Salary: ₱25,000", 20, 60);
+  doc.text("Overtime: ₱2,000", 20, 70);
+  doc.text("Deductions: ₱1,500", 20, 80);
+  doc.text("Net Pay: ₱25,500", 20, 90);
+  doc.text("Thank you for your hard work!", 20, 110);
+  doc.save("Payslip.pdf");
+}
+
+function generateCertificate() {
+  const doc = new jsPDF();
+  doc.setFont("times", "bold");
+  doc.setFontSize(18);
+  doc.text("Certificate of Employment", 70, 30);
+  doc.setFont("times", "normal");
+  doc.setFontSize(12);
+  doc.text(`This is to certify that ${name}`, 20, 50);
+  doc.text("is employed with SPF Inc. as a Director.", 20, 60);
+  doc.text("The employee has shown dedication and professionalism", 20, 70);
+  doc.text("throughout their employment.", 20, 80);
+  doc.text("Issued this 27th day of October, 2025.", 20, 100);
+  doc.text("Authorized by: Rupert Toriana", 20, 120);
+  doc.text("_________________________", 20, 135);
+  doc.text("HR Department - SPF INC", 20, 145);
+  doc.save("Certificate_of_Employment.pdf");
+}
+
+function submitLeave() {
+  const type = document.getElementById("leaveType").value;
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+  if (!start || !end) {
+    alert("Please complete the leave dates.");
+    return;
+  }
+  alert(`Leave request submitted:\nType: ${type}\nFrom: ${start}\nTo: ${end}`);
+}
+</script>
+</body>
+</html>
